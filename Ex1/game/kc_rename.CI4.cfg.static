@@ -1,0 +1,15 @@
+[Language]
+bMultilanguage=No
+singleLanguage=0
+
+[Edition]
+bHoliday=No
+
+[Graphics]
+ditherDepth=15
+
+[Input]
+hardwareMouseScaling=1.0
+
+
+

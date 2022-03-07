@@ -1,0 +1,285 @@
+/* Standard tag overrides --------------------------------------------------------------------------------- */
+
+/* Force vertical scrollbar in Firefox */
+:root {
+	overflow-y: scroll;
+}
+
+body {
+	margin: 0px;
+	padding: 0px;
+	background-color: #162c42;
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-size: 82%;
+	text-align: left;
+	color: #96acc3;
+}
+
+h1 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 30px;
+	font-style: normal;
+	font-weight: bold;
+	margin: 0px;
+}
+
+h2 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 24px;
+	font-style: normal;
+	font-weight: bold;
+	margin: 0px;
+}
+
+p {
+	margin: 0px;
+	padding: 0.5em 0px 0.5em 0px;
+}
+
+ul {
+	margin: 0.5em 0px 0.5em 1.5em;
+	padding: 0px;
+	list-style-image: url(images6/list-bullet-square.png);
+	list-style-position:outside;
+}
+
+li {
+	margin: 0px 0px 1em 0px;
+	padding: 0px;
+}
+
+strong {
+	color: #b8c8d9;
+}
+
+/* Outer page structure --------------------------------------------------------------------------------- */
+
+/* tabs */
+.strip1bg
+{
+	background-image: url(images6/bg-strip1.png);
+	background-repeat: repeat-x; 
+	background-position: 50% 0;
+}
+.strip1
+{
+	margin: 0px auto;
+	width: 696px;
+	height: 32px;	
+	
+}
+
+/* header */
+.strip2bg
+{
+	background-image: url(images6/bg-strip2.png);
+	background-repeat: repeat-x; 
+	background-position: 50% 0;
+}
+
+.strip2
+{
+	margin: 0px auto;
+	width: 608px;
+	height: 106px;	
+	padding-left: 88px;
+	
+}
+
+/* main area */
+.strip3bgwrapper
+{
+	background-image: url(images6/bg-strip3-repeat.png);
+	background-repeat: repeat; 
+	background-position: 50% 0;
+}
+
+.strip3bg
+{
+	background-image: url(images6/bg-strip3.png);
+	background-repeat: repeat-x; 
+	background-position: 50% 0;
+}
+
+.strip3
+{
+	margin: 0px auto;
+	width: 696px;
+	min-height: 480px;
+	
+}
+
+/* footer */
+.strip4bg
+{
+	background-image: url(images6/bg-strip4.png);
+	background-repeat: repeat-x; 
+	background-position: 50% 0;
+}
+.strip4
+{
+	padding: 32px;
+	text-align: center;
+	
+}
+
+
+
+
+/* Links --------------------------------------------------------------------------------- */
+
+a:link {
+	color: #57C5FC;
+	text-decoration: none;
+}
+
+a:visited {
+	color: #47a0cc;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #FF8000;  
+	text-decoration: underline;
+}
+
+a img {
+	border: 0px;
+}
+
+
+
+/* Page layout --------------------------------------------------------------------------------- */
+
+.iconstrip {
+	text-align: center;
+	background-color: #1f3042;
+}
+
+.horizontalbreak {
+	clear: both;
+}
+
+.column1 {
+	float: left;
+	width: 224px;
+	padding: 4px;
+}
+
+.column2 {
+	width: 224px;
+	margin: 0px auto;
+	/* Won't fit in IE6 if we have left/right paddings (although it should) */
+	padding-top: 4px;
+	padding-bottom: 4px;
+	text-align: justify;
+}
+
+.column3 {
+	float: right;
+	width: 224px;
+	padding: 4px;
+}
+
+
+.smallertext {
+	font-size: 80%;
+}
+
+.smallertextgray {
+	font-size: 80%;
+	color: #819bb6;
+}
+
+.white10
+{
+	padding: 4px;
+	background-color: #2b3b4c;
+}
+
+.white5
+{
+	padding: 4px;
+	background-color: #1f3042;
+}
+
+
+
+/* Rounded boxes --------------------------------------------------------------------------------- */
+
+.roundedbox-download
+{
+	width: 160px;
+	height: 64px;
+	background-image: url(images6/roundedbox-download.png);
+	background-repeat: no-repeat;
+	padding-left: 64px;
+	color: #9fff40;
+	margin-bottom: 4px;
+}
+
+
+.roundedbox-download a:link,
+.roundedbox-download a:visited
+{
+	text-decoration: none;
+	color: #9fff40;
+}
+
+.roundedbox-download a:hover,
+.roundedbox-download a:active
+{
+	text-decoration: none;
+	color: #ffffff;
+}
+
+
+
+.roundedbox-buy
+{
+	width: 160px;
+	height: 64px;
+	background-image: url(images6/roundedbox-buy.png);
+	background-repeat: no-repeat;
+	padding-left: 64px;
+	color: #40cfff;
+	margin-bottom: 4px;
+}
+
+.roundedbox-buy a:link,
+.roundedbox-buy a:visited
+{
+	text-decoration: none;
+	color: #40cfff;
+}
+
+.roundedbox-buy a:hover,
+.roundedbox-buy a:active
+{
+	text-decoration: none;
+	color: #ffffff;
+}
+
+
+
+
+
+
+/* Various --------------------------------------------------------------------------------- */
+
+.dialogcontainer {
+	width: 400px;
+	margin: 0px auto;
+}
+
+.tablerow-even {
+	background-color: #1f3042;
+}
+
+.tablerow-odd {
+}
+
+.producttable td {
+	border-bottom: 1px solid #132538;
+}
+
