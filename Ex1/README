@@ -1,0 +1,17 @@
+part 7 Sol:
+to change the date of the file i used python os library with os.utime() to change the date of my file.
+to make the directory look the same I made the original exe hidden.
+
+part 8:
+I tried to use iexpress windows tool but i missed a bass.dll and didnt fix it.
+
+part 9:
+b)
+the pros of using python for viruses is the ease of use and all of the libraries
+ and the support in stack overflow and other sites.
+the cons are that you dont have acces to the bases of what the pc is doing
+like in c where you can move the pointer in different segments etc.
+
+c)
+there is none like I said in b) there is pros and cons to each language. if
+I had to choose one I would choose C++ but in the real world I dont have to.
