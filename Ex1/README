@@ -6,6 +6,9 @@ part 8:
 I tried to use iexpress windows tool but i missed a bass.dll and didnt fix it.
 
 part 9:
+a)
+after a little bit of searching through the file I noticed a lot of text and visual code from py2exe
+and more interestingly I found my own code.
 b)
 the pros of using python for viruses is the ease of use and all of the libraries
  and the support in stack overflow and other sites.
@@ -15,3 +18,6 @@ like in c where you can move the pointer in different segments etc.
 c)
 there is none like I said in b) there is pros and cons to each language. if
 I had to choose one I would choose C++ but in the real world I dont have to.
+
+
+my setup file do all the work form start to finish and can make the game infected with my virus without additional help.

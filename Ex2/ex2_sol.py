@@ -8,6 +8,8 @@ import json
 import base64
 from typing import Tuple
 
+ENCODING = 'utf-8'
+
 X_VALIDITY = "X"
 
 PADDER = '~'
@@ -27,9 +29,13 @@ def generate_key_pair() -> KEY_PAIR:
     """
     q = get_random_prime()
     p = get_random_prime()
+    while q == p:
+        p = get_random_prime()
     n = q * p
     sigma = (p - 1) * (q - 1)
     e = 2 ** E_POWER + 1
+    while not is_coprime(e, sigma):
+        e = np.random.randint(3, sigma)
     d = get_multiplicative_inverse(e, sigma)
     pub_key = (e, n)
     pri_key = (d, n)
@@ -43,7 +49,22 @@ def use_key(num: int, key: KEY) -> int:
     @param data the data to use the key on. Could be either raw data or cipher text.
     @param key the key used on the data. Could be either the public or private key.
     """
-    return (num ** key[0]) % key[1]
+    m = num
+    e, n = key
+    e_bin = bin(e)[2:]
+    A = len(e_bin)
+    m_mod_array = []
+    m_mod_array.append(m % n)
+    for i in range(1, A):
+        m_mod_array.append((np.int64(m_mod_array[i - 1])*np.int64(m_mod_array[i - 1])) % n)
+    m_mod_array = m_mod_array[::-1]
+    summery = 1
+    for i in range(A):
+        if e_bin[i]:
+            summery = (m_mod_array[i] * summery) % n
+            # summery = summery % n
+
+    return summery
 
 
 def cbc_encrypt(data: bytes, key: int) -> bytes:
@@ -56,16 +77,10 @@ def cbc_encrypt(data: bytes, key: int) -> bytes:
     key_bytes = int_2_bytes(key, BLOCK_SIZE)  # Get the string of the key
     blocks = [INITIAL_VECTOR]  # The first block in the CBC is the INITIAL_VECTOR
 
-    pad_size = (BLOCK_SIZE - len(data) % BLOCK_SIZE) % BLOCK_SIZE  # this is calculate the number of bytes we need.
-    number_of_padds = pad_size // len(bytes(PADDER, 'utf-8'))  # number of padders needed
-    data_array = bytearray(X_VALIDITY * (BLOCK_SIZE // len(bytes(X_VALIDITY, 'utf-8'))), 'utf-8')
-    data_array.extend(bytearray(PADDER * number_of_padds, 'utf-8'))
-    data_array.extend(data)
-    assert (len(data_array) % BLOCK_SIZE == 0)
     array = bytearray()
     block = blocks[0]
-    for i in range(len(data_array) // BLOCK_SIZE + 1):
-        block = xor_bytes(block, data_array[i * BLOCK_SIZE:(i + 1) * BLOCK_SIZE])
+    for i in range(len(data) // BLOCK_SIZE + 1):
+        block = xor_bytes(block, data[i * BLOCK_SIZE:(i + 1) * BLOCK_SIZE])
         block = xor_bytes(block, key_bytes)  # the Block Cipher Encryption
         array.extend(block)
     return bytes(array)
@@ -82,9 +97,6 @@ def cbc_decrypt(enc_data: bytes, key: int) -> bytes:
     block = INITIAL_VECTOR  # The first block in the CBC is the INITIAL_VECTOR
     data = enc_data
     data_array = bytearray()
-
-    # assert (len(enc_data % BLOCK_SIZE == 0))
-
     for i in range((len(data) // BLOCK_SIZE) + 1):
         temp = xor_bytes(data[i * BLOCK_SIZE:(i + 1) * BLOCK_SIZE], key_bytes)  # the Block Cipher Encryption
         temp = xor_bytes(temp, block)
@@ -92,7 +104,15 @@ def cbc_decrypt(enc_data: bytes, key: int) -> bytes:
         data_array.extend(temp)
     return bytes(data_array)
 
-    # Your code here...
+
+def _pad_and_encrypt(data: bytes, key: int):
+    pad_size = (BLOCK_SIZE - len(data) % BLOCK_SIZE) % BLOCK_SIZE  # this is calculate the number of bytes we need.
+    number_of_pads = pad_size // len(bytes(PADDER, ENCODING))  # number of padders needed
+    data_array = bytearray(X_VALIDITY * (BLOCK_SIZE // len(bytes(X_VALIDITY, ENCODING))), ENCODING)
+    data_array.extend(bytearray(PADDER * number_of_pads, ENCODING))
+    data_array.extend(data)
+    assert (len(data_array) % BLOCK_SIZE == 0)
+    return cbc_encrypt(data_array, key)
 
 
 def encrypt_data(data: str, pub_key: KEY) -> bytes:
@@ -103,7 +123,9 @@ def encrypt_data(data: str, pub_key: KEY) -> bytes:
     @return string representing JSON dump of the encryption dictionary. The returned data is in binary.
     """
     # Your code here...
-
+    cbc_key = np.random.randint(1, MAX_CBC_KEY)
+    enc_data = _pad_and_encrypt(bytes(data, ENCODING), cbc_key)
+    enc_cbc_key = use_key(cbc_key, pub_key)
     return json.dumps({
         "enc_key": enc_cbc_key,
         "payload": base64.b64encode(enc_data).decode()
@@ -121,6 +143,22 @@ def decrypt_and_validate_data(data: bytes, pub_key: KEY) -> str:
     """
     enc_dict = json.loads(data.decode())
     payload = base64.b64decode(enc_dict["payload"])
+    try:
+        assert (len(payload) % BLOCK_SIZE == 0)
+    except AssertionError:
+        raise InvalidPayloadLengthError
+
+    enc_cbc_key = enc_dict["enc_key"]
+    cbc_key = use_key(enc_cbc_key, pub_key)
+    data_with_padding: bytes = cbc_decrypt(payload, cbc_key)
+    validity_block = data_with_padding[0:BLOCK_SIZE].decode(ENCODING)
+    for i in range(len(validity_block)):
+        if validity_block[i] != X_VALIDITY:
+            raise InvalidSignatureError
+    string_with_padding = data_with_padding[BLOCK_SIZE:].decode(ENCODING)
+    for i in range(len(string_with_padding)):
+        if string_with_padding[i] != PADDER:
+            return string_with_padding[i:]
 
 
 if __name__ == '__main__':
@@ -136,12 +174,13 @@ if __name__ == '__main__':
     print()
 
     print("CBC encrypt of abcdef with key 17:", cbc_encrypt("abcdef".encode(), 17))
-    print("CBC decrypt of previous encryption:", cbc_decrypt(cbc_encrypt("abcdef".encode(), 17), 17)) # Should be abcdef
+    print("CBC decrypt of previous encryption:",
+          cbc_decrypt(cbc_encrypt("abcdef".encode(), 17), 17))  # Should be abcdef
     print()
-    #
-    # data = "Awesome raw data!!1"
-    # print("Data:", data)
-    # e = encrypt_data(data, pub)
-    # print("Enc:", e)
-    # d = decrypt_and_validate_data(e, pri)
-    # print("Dec:", d) # Should be the original data
+
+    data = "Awesome raw data!!1"
+    print("Data:", data)
+    e = encrypt_data(data, pub)
+    print("Enc:", e)
+    d = decrypt_and_validate_data(e, pri)
+    print("Dec:", d)  # Should be the original data

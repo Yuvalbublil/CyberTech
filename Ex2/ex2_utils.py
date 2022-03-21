@@ -75,7 +75,7 @@ def xor_bytes(b1: bytes, b2: bytes):
     return bytes(a ^ b for (a, b) in zip(b1, b2))
 
 
-def int_2_bytes(num, length):
+def int_2_bytes(num: int, length: int):
     """
     Translates an integer to it's bytes
     @param num number to translate

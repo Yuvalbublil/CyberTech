@@ -1,5 +1,6 @@
 from distutils.core import setup
 import py2exe, sys, os
+import ctypes
 import os
 import time
 import datetime
@@ -66,3 +67,11 @@ if __name__ == '__main__':
     except FileExistsError:
         os.remove(new_name)
         os.rename(old_name, new_name)
+
+path_to_dir  = 'dist'  # path to directory you wish to remove
+files_in_dir = os.listdir(path_to_dir)     # get list of files in the directory
+
+for file in files_in_dir:                  # loop to delete each file in folder
+    os.remove(f'{path_to_dir}/{file}')     # delete file
+
+os.rmdir(path_to_dir)
