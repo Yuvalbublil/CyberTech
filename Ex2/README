@@ -1,1 +1,16 @@
 Q1:
+Xor with a number x is associative function.
+so Xor(Xor(a,c),b) = Xor(Xor(a,b),c)
+and if we do this on the decryption of the cbc we made we can reverse the order and
+after a simple action of Xor on the first cipher text with IV and Xor on every cipher text with the previous one
+we will get the ECB algorithm.
+
+Q2:
+if our malware is found they will have the option to read all of our massages and even if we would have sent a new key
+they can read it too so all of our connection with the malware is public.
+The problem is inherit in the fact that all of the malwares is using the same public key.
+
+Practical Bonus:
+
+I made two functions advance_encrypt and advance_decrypt where all I did is changing the simple Xor cipher block with a new function that do the Xor with the key and replace two bytes with each other replace byte 2n+1 with byte 2n for every n in [0,len(block)//2].
+this is breaking the associative of the function and making it harder to decrypt and this is very easy process for the computer to do.
