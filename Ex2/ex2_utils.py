@@ -3,7 +3,7 @@ import numpy as np
 import base64
 
 
-PRIME_NUMBER_BITS = 13 # If your code is running too slow, make it 9
+PRIME_NUMBER_BITS = 13  # If your code is running too slow, make it 9
 N_MAX_BITS = PRIME_NUMBER_BITS * 2
 MAX_CBC_KEY_POWER = (PRIME_NUMBER_BITS - 1) * 2
 MAX_CBC_KEY = np.power(2, MAX_CBC_KEY_POWER)

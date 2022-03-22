@@ -92,12 +92,80 @@ def cbc_decrypt(enc_data: bytes, key: int) -> bytes:
     @param key the key to use for decryption.
     @return decrypted plain data.
     """
+
+
+
     key_bytes = int_2_bytes(key, BLOCK_SIZE)  # Get the string of the key
     block = INITIAL_VECTOR  # The first block in the CBC is the INITIAL_VECTOR
     data = enc_data
     data_array = bytearray()
     for i in range((len(data) // BLOCK_SIZE) + 1):
         temp = xor_bytes(data[i * BLOCK_SIZE:(i + 1) * BLOCK_SIZE], key_bytes)  # the Block Cipher Encryption
+        temp = xor_bytes(temp, block)
+        block = data[i * BLOCK_SIZE:(i + 1) * BLOCK_SIZE]
+        data_array.extend(temp)
+    return bytes(data_array)
+
+
+def advance_encrypt(data: bytes, key: int) -> bytes:
+    """
+    Encrypts data using CBC encryption. Use INITIAL_VECTOR for IV.
+    @param data the data to encrypt.
+    @param key the key to use for encryption.
+    @return encrypted CBC data. DO NOT RETURN THE INITIAL_VECTOR BLOCK.
+    """
+
+    def block_cipher_enc(in_block: bytes, in_key: int) -> bytes:
+        a = bytearray(xor_bytes(in_block, in_key))
+        flag = False
+        if len(a) % 2 == 1:
+            flag = True
+        b = bytearray()
+        for i in range(len(a) // 2):
+            b.append(a[2 * i + 1])
+            b.append(a[2 * i])
+        if flag:
+            b.append(a[-1])
+        return bytes(b)
+
+    key_bytes = int_2_bytes(key, BLOCK_SIZE)  # Get the string of the key
+    blocks = [INITIAL_VECTOR]  # The first block in the CBC is the INITIAL_VECTOR
+
+    array = bytearray()
+    block = blocks[0]
+    for i in range(len(data) // BLOCK_SIZE + 1):
+        block = xor_bytes(block, data[i * BLOCK_SIZE:(i + 1) * BLOCK_SIZE])
+        block = block_cipher_enc(block, key_bytes)  # the Block Cipher Encryption
+        array.extend(block)
+    return bytes(array)
+
+
+def advance_decrypt(enc_data: bytes, key: int) -> bytes:
+    """
+    Decrypts data using CBC encryption. Use INITIAL_VECTOR for IV.
+    @param enc_data the data to decrypt.
+    @param key the key to use for decryption.
+    @return decrypted plain data.
+    """
+    def block_cipher_dec(in_block: bytes, in_key: int) -> bytes:
+        a: bytearray = bytearray(in_block)
+        flag = False
+        if len(a) % 2 == 1:
+            flag = True
+        b: bytearray = bytearray()
+        for i in range(len(a) // 2):
+            b.append(a[2 * i + 1])
+            b.append(a[2 * i])
+        if flag:
+            b.append(a[-1])
+        return xor_bytes(bytes(b), in_key)
+
+    key_bytes = int_2_bytes(key, BLOCK_SIZE)  # Get the string of the key
+    block = INITIAL_VECTOR  # The first block in the CBC is the INITIAL_VECTOR
+    data = enc_data
+    data_array = bytearray()
+    for i in range((len(data) // BLOCK_SIZE) + 1):
+        temp = block_cipher_dec(data[i * BLOCK_SIZE:(i + 1) * BLOCK_SIZE], key_bytes)  # the Block Cipher Encryption
         temp = xor_bytes(temp, block)
         block = data[i * BLOCK_SIZE:(i + 1) * BLOCK_SIZE]
         data_array.extend(temp)
@@ -172,9 +240,9 @@ if __name__ == '__main__':
     print("Use pub and pri on 1000:", d)  # Encryption and decryption cancel out -> should be 1000
     print()
 
-    print("CBC encrypt of abcdef with key 17:", cbc_encrypt("abcdef".encode(), 17))
+    print("CBC encrypt of abcdef with key 17:", advance_encrypt("abcdef".encode(), 17))
     print("CBC decrypt of previous encryption:",
-          cbc_decrypt(cbc_encrypt("abcdef".encode(), 17), 17))  # Should be abcdef
+          advance_decrypt(advance_encrypt("abcdef".encode(), 17), 17))  # Should be abcdef
     print()
 
     data = "Awesome raw data!!1"
