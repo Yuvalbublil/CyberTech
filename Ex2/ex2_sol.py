@@ -30,10 +30,11 @@ def generate_key_pair() -> KEY_PAIR:
     q = get_random_prime()
     p = get_random_prime()
     while q == p:
+        q = get_random_prime()
         p = get_random_prime()
     n = q * p
     sigma = (p - 1) * (q - 1)
-    e = 2 ** E_POWER + 1
+    e = 65537
     while not is_coprime(e, sigma):
         e = np.random.randint(3, sigma)
     d = get_multiplicative_inverse(e, sigma)
@@ -49,22 +50,20 @@ def use_key(num: int, key: KEY) -> int:
     @param data the data to use the key on. Could be either raw data or cipher text.
     @param key the key used on the data. Could be either the public or private key.
     """
-    m = num
     e, n = key
     e_bin = bin(e)[2:]
-    A = len(e_bin)
-    m_mod_array = []
-    m_mod_array.append(m % n)
-    for i in range(1, A):
-        m_mod_array.append((np.int64(m_mod_array[i - 1])*np.int64(m_mod_array[i - 1])) % n)
+    A = e.bit_length()
+    m_mod_array = [num % n]
+    # m_mod_array.append(num % n)
+    for _ in range(1, A):
+        m_mod_array.append((np.int64(m_mod_array[-1]) * np.int64(m_mod_array[-1])) % n)
     m_mod_array = m_mod_array[::-1]
-    summery = 1
+    summery = np.int64(1)
     for i in range(A):
-        if e_bin[i]:
-            summery = (m_mod_array[i] * summery) % n
-            # summery = summery % n
+        if e_bin[i] == '1':
+            summery = (m_mod_array[i] * np.int64(summery)) % n
 
-    return summery
+    return int(summery)
 
 
 def cbc_encrypt(data: bytes, key: int) -> bytes:
@@ -105,7 +104,7 @@ def cbc_decrypt(enc_data: bytes, key: int) -> bytes:
     return bytes(data_array)
 
 
-def _pad_and_encrypt(data: bytes, key: int):
+def _pad_and_encrypt(data: bytes, key: int) -> bytes:
     pad_size = (BLOCK_SIZE - len(data) % BLOCK_SIZE) % BLOCK_SIZE  # this is calculate the number of bytes we need.
     number_of_pads = pad_size // len(bytes(PADDER, ENCODING))  # number of padders needed
     data_array = bytearray(X_VALIDITY * (BLOCK_SIZE // len(bytes(X_VALIDITY, ENCODING))), ENCODING)

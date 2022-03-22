@@ -2,7 +2,8 @@ from Crypto.Util import number
 import numpy as np
 import base64
 
-PRIME_NUMBER_BITS = 9  # If your code is running too slow, make it 9
+
+PRIME_NUMBER_BITS = 13 # If your code is running too slow, make it 9
 N_MAX_BITS = PRIME_NUMBER_BITS * 2
 MAX_CBC_KEY_POWER = (PRIME_NUMBER_BITS - 1) * 2
 MAX_CBC_KEY = np.power(2, MAX_CBC_KEY_POWER)
@@ -65,7 +66,7 @@ def is_coprime(a, b):
     return (gcd(a, b) == 1)
 
 
-def xor_bytes(b1: bytes, b2: bytes):
+def xor_bytes(b1, b2):
     """
     Computes xor on two EQUALLY SIZED byte arrays
     @param s1 first string
@@ -75,7 +76,7 @@ def xor_bytes(b1: bytes, b2: bytes):
     return bytes(a ^ b for (a, b) in zip(b1, b2))
 
 
-def int_2_bytes(num: int, length: int):
+def int_2_bytes(num, length):
     """
     Translates an integer to it's bytes
     @param num number to translate
@@ -83,12 +84,12 @@ def int_2_bytes(num: int, length: int):
     @return the representation of the number's bytes.
     """
     hex_rep = hex(num)[2:]
-    hex_rep = '0' * (len(hex_rep) % 2) + hex_rep  # Pad to even
+    hex_rep = '0' * (len(hex_rep) % 2) + hex_rep # Pad to even
     hex_rep = '0' * 2 * (length - (len(hex_rep) // 2)) + hex_rep
     bytes_ascii = ""
 
     for i in range(0, len(hex_rep), 2):
-        bytes_ascii += chr(int(hex_rep[i:i + 2], 16))
+        bytes_ascii += chr(int(hex_rep[i:i+2], 16))
 
     return bytes_ascii.encode()
 
@@ -115,7 +116,6 @@ if __name__ == '__main__':
     print(f"Multiplicative inverse of 22609 under modulo 28836: {get_multiplicative_inverse(22609, 28836)}")
     print(f"Xor of '111' and 'qrs': {xor_strings('111', 'qrs')}")
     print(f"Int2str of 4 bytes for 0x61626364 (hexadecimal for abcd): {int_2_str(0x61626364, 4)}")
-    print(
-        f"Str2Int(int2str) of 4 bytes for 0x61626364 (hexadecimal for abcd): {hex(str_2_int(int_2_str(0x61626364, 4)))}")
+    print(f"Str2Int(int2str) of 4 bytes for 0x61626364 (hexadecimal for abcd): {hex(str_2_int(int_2_str(0x61626364, 4)))}")
     print(f"Encode base64 of abc: {str_2_base64('abc')}")
     print(f"Decode base64 for abc: {base64_2_str(str_2_base64('abc'))}")
