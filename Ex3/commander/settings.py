@@ -1,0 +1,3 @@
+PORTS = [1234, 5678, 1278]
+COMMAND_PORT = X
+IP = 'localhost'
