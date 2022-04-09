@@ -6,7 +6,7 @@ def main():
     """
     Main function for commander
     """
-    payload = b"print('Hello World!')\nprint(os.listdir())\nprint(8/0)"
+    payload = b"print('Hello World!')\nprint(os.listdir())\n"
     output = send_payload(payload)
     print(output.decode('utf-8'))  # Should print Hello World!
 
