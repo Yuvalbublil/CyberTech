@@ -65,7 +65,6 @@ def use_key(num: int, key: KEY) -> int:
 
     return int(summery)
 
-
 def cbc_encrypt(data: bytes, key: int) -> bytes:
     """
     Encrypts data using CBC encryption. Use INITIAL_VECTOR for IV.
@@ -75,7 +74,6 @@ def cbc_encrypt(data: bytes, key: int) -> bytes:
     """
     key_bytes = int_2_bytes(key, BLOCK_SIZE)  # Get the string of the key
     blocks = [INITIAL_VECTOR]  # The first block in the CBC is the INITIAL_VECTOR
-
     array = bytearray()
     block = blocks[0]
     for i in range(len(data) // BLOCK_SIZE + 1):

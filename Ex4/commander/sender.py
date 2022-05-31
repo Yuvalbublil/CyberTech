@@ -11,7 +11,6 @@ HOST = "127.0.0.1"
 def int_from_bytes(xbytes: bytes) -> int:
     return int.from_bytes(xbytes, 'big')
 
-
 def int_to_bytes(x: int) -> bytes:
     return x.to_bytes((x.bit_length() + 7) // 8, 'big')
 
@@ -28,7 +27,8 @@ def send_payload(data: bytes) -> bytes:
         time.sleep(0.2)
     port_knock.sendto(int_to_bytes(len(data)), (IP, COMMAND_PORT))
     port_knock.sendto(data, (IP, COMMAND_PORT))
-    size = int_from_bytes(port_knock.recvfrom(BUFSIZE)[0])
+    size = int_from_bytes(port_knock.recv(BUFSIZE))
+    # port_knock.recvfrom()
     received = 0
     rec_data = bytearray()
     while received < size:
